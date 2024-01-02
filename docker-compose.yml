@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nginx:
+    image: ghcr.io/dhartung/paper-image-server:latest
+    restart: unless-stopped
+    ports:
+      - "9981:9981"
+    volumes:
+      - ./images:/images
+    environment:
+      PAPER_PORT: "3000"
+      PAPER_IMAGE_DIRECTORY: "/images"
+      PAPER_SLEEP_TIME_IN_SECONDS: "60000"
+      PAPER_BASE_PATH: "/potato"
