@@ -22,6 +22,8 @@ export const readImageAsBuffer = async (
       fit: "cover",
       // strategy: "attention" // chose image cut wisely
     })
+    .normalize()
+    .gamma()
     .raw()
     .toBuffer({ resolveWithObject: true });
 

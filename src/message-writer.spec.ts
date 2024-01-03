@@ -22,7 +22,7 @@ describe("test image should be encoded correctly", () => {
     expect((await buffer)[0]).toBe(0xff));
 
   it("The first red pixel should be encoded in correct bit order", async () =>
-    expect((await buffer)[DISPLAY_WIDTH / 2]).toBe(0x3f));
+    expect((await buffer)[DISPLAY_WIDTH / 2]).toBe(0x4f));
 
   it("The very last pixel should be endoced as well", async () =>
     expect((await buffer)[(DISPLY_HEIGHT * DISPLAY_WIDTH) / 2 - 1]).toBe(0x6f));
