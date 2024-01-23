@@ -1,0 +1,14 @@
+[
+    {
+        "device_key": 0,
+        "url": "https://youtu.be/dQw4w9WgXcQ",
+        "title": "RAUM A32",
+        "room_type": "Besprechungsraum"
+    },
+    {
+        "device_key": 1,
+        "url": "https://youtu.be/dQw4w9WgXcQ",
+        "title": "RAUM A33",
+        "room_type": "Besprechungsraum"
+    }
+]
