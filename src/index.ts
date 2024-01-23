@@ -3,6 +3,7 @@ import "dotenv/config";
 import { createMessage, generateDisplayImage } from "./message-writer";
 import "express-async-errors";
 import getEventsForRoom from "./data-provider";
+import getNextWakeupSeconds from "./wakeup-calculator";
 
 const PORT = process.env.PAPER_PORT || 3000;
 const BASE_PATH = process.env.PAPER_BASE_PATH || "/";
@@ -37,10 +38,8 @@ base.get("/", async (req, res) => {
 
     const events = getEventsForRoom(1);
 
-    //calculate the next 
-    const differenceInSeconds = (events[0].time_end.getTime() - (new Date()).getTime()) / 1000 + 60;
-    console.log(`Difference to next start in seconds: ${differenceInSeconds}`);
-
+    const wakeUpTime = getNextWakeupSeconds(events[0].time_end);
+    console.log(`Wake next Wakeup of "${key}" in ${wakeUpTime} seconds`)
 
     const image = await generateDisplayImage(
       "http://test.url.com",
@@ -51,7 +50,7 @@ base.get("/", async (req, res) => {
     const response = await createMessage(
       image,
       0,
-      (differenceInSeconds >>> 0)
+      wakeUpTime
     );
 
     res.setHeader("Content-Type", "application/octet-stream");

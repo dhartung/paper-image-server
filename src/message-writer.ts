@@ -25,7 +25,7 @@ export const generateDisplayImage = async (
     person: string;
   }[]
 ): Promise<BinaryImage> => {
-  const imageBuffer = await sharp(new Buffer(await render({qrCodeUrl, title, roomType, meetings}), "base64"))
+  const imageBuffer = await sharp(Buffer.from(await render({qrCodeUrl, title, roomType, meetings}), "base64"))
     .grayscale()
     .resize(960, 540, {
       fit: "cover",
