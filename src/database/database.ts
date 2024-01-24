@@ -18,6 +18,10 @@ function getRoom(id: number) : Room  | undefined{
     const stmt = db.prepare("SELECT * FROM Rooms WHERE id = $id");
     return stmt.get({ id }) as Room;
 }
+function getRooms() {
+    const stmt = db.prepare("SELECT * FROM Rooms");
+    return stmt.all();
+}
 function getRoomBySecret(secret: string) : Room | undefined{
     const stmt = db.prepare("SELECT * FROM Rooms WHERE secret = $secret");
     return stmt.get({ secret }) as Room;
@@ -46,6 +50,7 @@ type Room = {
 
 
 export default {
+    getRooms,
     getRoomBySecret,
     createRoom,
     createVoltage,

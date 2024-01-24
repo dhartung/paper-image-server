@@ -5,10 +5,12 @@ import "express-async-errors";
 import getEventsForRoom from "./data-provider";
 import getNextWakeupSeconds from "./wakeup-calculator";
 import database from "./database/database";
-
+import api from "./database/api";
+import path from "path";
+import cors from "cors";
 
 const PORT = process.env.PAPER_PORT || 3000;
-const BASE_PATH = process.env.PAPER_BASE_PATH || "/";
+const BASE_PATH = process.env.PAPER_BASE_PATH || "/generate";
 
 const app = express();
 const base = express();
@@ -58,6 +60,9 @@ base.get("/", async (req, res) => {
 });
 
 app.use(BASE_PATH, base);
+app.use("/", express.static(path.join(__dirname, "..", "interface", "dist")));
+console.log(path.join(__dirname, "..", "interface", "dist"));
+app.use("/api", api);
 
 if (BASE_PATH != "/") {
   app.get("/", (_, res) => res.redirect(301, BASE_PATH));
