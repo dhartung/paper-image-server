@@ -1,16 +1,20 @@
-import express, { Application } from "express";
+import express  from "express";
 import "dotenv/config";
 import { createMessage, generateDisplayImage } from "./message-writer";
 import "express-async-errors";
 import getEventsForRoom from "./data-provider";
 import getNextWakeupSeconds from "./wakeup-calculator";
+import database from "./database/database";
+
 
 const PORT = process.env.PAPER_PORT || 3000;
 const BASE_PATH = process.env.PAPER_BASE_PATH || "/";
-const DEVICE_KEYS = process.env.PAPER_DEVICE_KEYS?.split(",") || [];
 
 const app = express();
 const base = express();
+
+console.log(database.getRoom(1));
+
 
 const toNumber = (value: any): number => {
   if (typeof value === "number") {
@@ -22,24 +26,20 @@ const toNumber = (value: any): number => {
   }
 };
 
-const checkDeviceKey = (key: string | undefined): void => {
-  if (DEVICE_KEYS.length > 0) {
-    if (!key || !DEVICE_KEYS.includes(key.toString())) {
-      throw Error(`Invalid key`);
-    }
-  }
-};
 
 base.get("/", async (req, res) => {
-    const { version, voltage, wakeups, key } = req.query;
+    const { version, voltage, wakeups, key: secret } = req.query;
     console.log(`Got request with parameter: ${JSON.stringify(req.query)}`);
 
-    checkDeviceKey(key?.toString());
+    const room = database.getRoomBySecret(secret as string);
+    if (room) {
+      database.createVoltage(room.id, toNumber(voltage), toNumber(wakeups));
+    }
 
     const events = getEventsForRoom(1);
 
     const wakeUpTime = getNextWakeupSeconds(events[0].time_end);
-    console.log(`Wake next Wakeup of "${key}" in ${wakeUpTime} seconds`)
+    console.log(`Wake next Wakeup of >>>${secret}<<< in ${wakeUpTime} seconds`)
 
     const image = await generateDisplayImage(
       "http://test.url.com",
