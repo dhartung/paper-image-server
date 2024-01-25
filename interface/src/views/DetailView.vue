@@ -8,6 +8,10 @@ import Emulator from '../components/Emulator.vue';
             <v-btn>back</v-btn>
         </router-link>
         <v-divider style="margin: 10px;"></v-divider>
+        <h2>Room Information</h2>
+        <v-container>
+        </v-container>
+        <v-divider style="margin: 10px;"></v-divider>
         <h2>Voltages</h2>
         <Line :data="data" :options="options" :key="componentKey" />
         <v-divider style="margin: 10px;"></v-divider>
@@ -23,9 +27,6 @@ import {
     LinearScale,
     PointElement,
     LineElement,
-    Title,
-    Tooltip,
-    Legend
 } from 'chart.js';
 import { Line } from 'vue-chartjs';
 
@@ -34,9 +35,6 @@ ChartJS.register(
     LinearScale,
     PointElement,
     LineElement,
-    Title,
-    Tooltip,
-    Legend
 )
 
 export default {

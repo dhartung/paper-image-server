@@ -42,9 +42,9 @@ base.get("/", async (req, res) => {
     console.log(`Wake next Wakeup of >>>${secret}<<< in ${wakeUpTime} seconds`)
 
     const image = await generateDisplayImage(
-      "http://test.url.com",
-      "title",
-      "subtitle",
+      room?.url || "https://github.com/dhartung/paper-image-server",
+      room?.name || "No Room",
+      room?.type || "No Room",
       events
     );
     const response = await createMessage(
