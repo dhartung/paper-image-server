@@ -29,7 +29,7 @@ export default {
   },
   methods: {
       fetchCards() {
-          fetch("http://localhost:3000/api/rooms")
+          fetch("/api/rooms")
               .then(response => response.json())
               .then(data => {
                   this.cards = data;

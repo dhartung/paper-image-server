@@ -102,15 +102,15 @@ export default {
             return window.location.origin;
         },
         emulatorURL() {
-            console.log("http://localhost:3000" + "/generate?key=" + this.deviceInformation.secret + "&emulator=true")
-            return "http://localhost:3000" + "/generate?key=" + this.deviceInformation.secret + "&emulator=true";
+            console.log("" + "/generate?key=" + this.deviceInformation.secret + "&emulator=true")
+            return "" + "/generate?key=" + this.deviceInformation.secret + "&emulator=true";
 
             //return this.windowLocation + "/generate?key=" + this.deviceInformation.secret + "&emulator=true";
         }
     },
     methods: {
         async getVoltages() {
-            const response = await fetch("http://localhost:3000/api/voltages/"+this.$route.params.id);
+            const response = await fetch("/api/voltages/"+this.$route.params.id);
             const res = await response.json();
             const labels = res.map((item) => (new Date(item.created_at)).toLocaleDateString("de-DE") + " " + (new Date(item.created_at)).toLocaleTimeString("de-DE") + "("+item.wakeups+")");
             const data = res.map((item) => (item.voltage));
@@ -122,14 +122,14 @@ export default {
             console.log(res[0].created_at)
         },
         async getRoomData() {
-            const response = await fetch("http://localhost:3000/api/rooms/"+this.$route.params.id);
+            const response = await fetch("/api/rooms/"+this.$route.params.id);
             this.deviceInformation = await response.json();
         },
         reloadLine() {
             this.componentKey += 1;
         },
         deleteRoom() {
-            fetch("http://localhost:3000/api/rooms/"+this.$route.params.id, {
+            fetch("/api/rooms/"+this.$route.params.id, {
                 method: 'DELETE',
             }).then(() => {
                 this.$router.push('/')
