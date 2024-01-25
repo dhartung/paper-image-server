@@ -15,8 +15,6 @@ const BASE_PATH = process.env.PAPER_BASE_PATH || "/generate";
 const app = express();
 const base = express();
 
-console.log(database.getRoom(1));
-
 
 const toNumber = (value: any): number => {
   if (typeof value === "number") {
@@ -40,7 +38,7 @@ base.get("/", async (req, res) => {
 
     const events = getEventsForRoom(1);
 
-    const wakeUpTime = getNextWakeupSeconds(events[0].time_end);
+    const wakeUpTime = toNumber(getNextWakeupSeconds(events[0].time_end));
     console.log(`Wake next Wakeup of >>>${secret}<<< in ${wakeUpTime} seconds`)
 
     const image = await generateDisplayImage(
