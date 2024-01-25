@@ -28,11 +28,11 @@ const toNumber = (value: any): number => {
 
 
 base.get("/", async (req, res) => {
-    const { version, voltage, wakeups, key: secret } = req.query;
+    const { version, voltage, wakeups, key: secret, emulator } = req.query;
     console.log(`Got request with parameter: ${JSON.stringify(req.query)}`);
 
     const room = database.getRoomBySecret(secret as string);
-    if (room) {
+    if (!emulator && room) {
       database.createVoltage(room.id, toNumber(voltage), toNumber(wakeups));
     }
 
@@ -57,6 +57,7 @@ base.get("/", async (req, res) => {
     res.send(response);
 });
 
+app.use(cors());
 app.use(BASE_PATH, base);
 app.use("/", express.static(path.join(__dirname, "..", "interface", "dist")));
 console.log(path.join(__dirname, "..", "interface", "dist"));
