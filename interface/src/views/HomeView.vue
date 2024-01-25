@@ -1,6 +1,7 @@
 <template>
   <v-app>
       <v-container>
+        <router-link to="/create"><v-btn style="margin: 10px;">Create a new room</v-btn></router-link>
           <v-row>
               <v-col v-for="card in cards" :key="card.id" cols="12" sm="6" md="4" lg="3">
                   <v-card>
