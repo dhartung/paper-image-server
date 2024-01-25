@@ -1,6 +1,5 @@
 const { createCanvas, loadImage } = require('canvas');
 var QRCode = require('qrcode');
-const fs = require('fs');
 const  { join } = require('path');
 
 async function render({ qrCodeUrl, title, roomType, meetings } : any) {

@@ -1,15 +1,7 @@
-import sharp from "sharp";
 import {
-  generateDisplayImage,
   createMessage,
   BinaryImage,
 } from "./message-writer";
-import { tmpdir } from "os";
-import { join as pathJoin } from "path";
-
-const DISPLAY_WIDTH = 960;
-const DISPLY_HEIGHT = 540;
-
 
 
 describe("createMessage", () => {
