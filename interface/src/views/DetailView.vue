@@ -7,16 +7,47 @@ import Emulator from '../components/Emulator.vue';
         <router-link to="/">
             <v-btn>back</v-btn>
         </router-link>
+        <v-btn style="margin-left: 10px;" color="red" @click="deleteRoom">delete room</v-btn>
+
         <v-divider style="margin: 10px;"></v-divider>
-        <h2>Room Information</h2>
-        <v-container>
-        </v-container>
+        <v-card>
+            <v-card-title>
+                <h2>Room Information</h2>
+            </v-card-title>
+            <v-card-text>
+                <v-table>
+                    <tbody>
+                    <tr>
+                        <td>update URL</td>
+                        <td>{{ windowLocation + "/generate" }}</td>
+                    </tr>
+                    <tr>
+                        <td>device key / secret</td>
+                        <td>{{ deviceInformation.secret }}</td>
+                    </tr>
+                    <tr>
+                        <td>room type</td>
+                        <td>{{ deviceInformation.type }}</td>
+                    </tr>
+                    <tr>
+                        <td>QRCODE URL</td>
+                        <td>{{ deviceInformation.url }}</td>
+                    </tr>
+                    </tbody>
+                </v-table>
+            </v-card-text>
+        </v-card>
         <v-divider style="margin: 10px;"></v-divider>
-        <h2>Voltages</h2>
-        <Line :data="data" :options="options" :key="componentKey" />
+        <v-card>
+            <v-card-text>
+                <h2>Voltages</h2>
+            </v-card-text>
+            <v-card-text>
+                <Line :data="data" :options="options" :key="componentKey" />
+            </v-card-text>
+        </v-card>
         <v-divider style="margin: 10px;"></v-divider>
-        <h2>Emulator</h2>
-        <emulator url="http://localhost:3000/generate?key=Your-Device-Key&emulator=true" />
+        <emulator :url="emulatorURL" />
     </v-container>
 </template>
 
@@ -45,6 +76,7 @@ export default {
     data() {
         return {
             componentKey: 0,
+            deviceInformation: {},
             data: {
                 labels: [],
                 datasets: [
@@ -62,10 +94,22 @@ export default {
         }
     },
     mounted() {
-        this.getData()
+        this.getVoltages()
+        this.getRoomData()
+    },
+    computed: {
+        windowLocation() {
+            return window.location.origin;
+        },
+        emulatorURL() {
+            console.log("http://localhost:3000" + "/generate?key=" + this.deviceInformation.secret + "&emulator=true")
+            return "http://localhost:3000" + "/generate?key=" + this.deviceInformation.secret + "&emulator=true";
+
+            //return this.windowLocation + "/generate?key=" + this.deviceInformation.secret + "&emulator=true";
+        }
     },
     methods: {
-        async getData() {
+        async getVoltages() {
             const response = await fetch("http://localhost:3000/api/voltages/"+this.$route.params.id);
             const res = await response.json();
             const labels = res.map((item) => (new Date(item.created_at)).toLocaleDateString("de-DE") + " " + (new Date(item.created_at)).toLocaleTimeString("de-DE") + "("+item.wakeups+")");
@@ -77,8 +121,19 @@ export default {
 
             console.log(res[0].created_at)
         },
+        async getRoomData() {
+            const response = await fetch("http://localhost:3000/api/rooms/"+this.$route.params.id);
+            this.deviceInformation = await response.json();
+        },
         reloadLine() {
             this.componentKey += 1;
+        },
+        deleteRoom() {
+            fetch("http://localhost:3000/api/rooms/"+this.$route.params.id, {
+                method: 'DELETE',
+            }).then(() => {
+                this.$router.push('/')
+            })
         }
     }
 }

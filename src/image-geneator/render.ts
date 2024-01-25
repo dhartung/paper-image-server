@@ -12,8 +12,6 @@ async function render({ qrCodeUrl, title, roomType, meetings } : any) {
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, 960, 540);
 
-    console.log(qrCodeUrl);
-
     // Generate QR code
     const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUrl);
     const qrCodeImage = await loadImage(qrCodeDataUrl);

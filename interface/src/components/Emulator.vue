@@ -6,7 +6,7 @@
     </v-card-text>
     <v-divider></v-divider>
     <v-card-text class="image-container">
-      <img :src="imgSrc" />
+      <img :src="imgSrc" style="width: 100%;   max-width: 960px;"/>
     </v-card-text>
     <v-card-actions>
       <v-btn color="primary" @click="fetchAndDecode">Refresh</v-btn>
