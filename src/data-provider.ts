@@ -5,7 +5,7 @@ import { join as pathJoin } from "path";
 function getEventsForRoom(roomID: number) {
         let roomEvents = getAllEvents().filter(event => event.room === roomID);
         roomEvents = roomEvents.filter(event => event.time_end.getTime() - (new Date()).getTime() > 0); // Filter events where the end time is in the future
-        return roomEvents.sort((a, b) => a.time_start.toString().localeCompare(b.time_start.toString()));
+        return roomEvents.sort((a, b) => a.time_start.getTime() - b.time_start.getTime());
 }
 
 

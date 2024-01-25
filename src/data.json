@@ -8,8 +8,8 @@
     },
     {
         "title": "Meeting 1",
-        "time_start": "2022-10-01T09:00:00Z",
-        "time_end": "2025-10-01T10:00:00Z",
+        "time_start": "2022-10-01T10:00:00Z",
+        "time_end": "2025-10-01T11:00:00Z",
         "person": "Max Mustermann",
         "room": 1
     },
