@@ -118,8 +118,6 @@ export default {
             this.data.labels = labels;
             this.data.datasets[0].data = data;
             this.reloadLine();
-
-            console.log(res[0].created_at)
         },
         async getRoomData() {
             const response = await fetch("/api/rooms/"+this.$route.params.id);
