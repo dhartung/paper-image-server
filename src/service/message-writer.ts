@@ -1,5 +1,4 @@
 import sharp from "sharp";
-import render from "./image-geneator/render";
 
 export type BinaryImage = {
   width: number;
@@ -15,17 +14,9 @@ export const isUInt32 = (value: number): value is UInt32 => {
 };
 
 export const generateDisplayImage = async (
-  qrCodeUrl: string,
-  title: string,
-  roomType: string,
-  meetings: {
-    title: string;
-    time_start: Date;
-    time_end: Date;
-    person: string;
-  }[]
+  buffer: Buffer
 ): Promise<BinaryImage> => {
-  const imageBuffer = await sharp(Buffer.from(await render({qrCodeUrl, title, roomType, meetings}), "base64"))
+  const imageBuffer = await sharp(buffer)
     .grayscale()
     .resize(960, 540, {
       fit: "cover",

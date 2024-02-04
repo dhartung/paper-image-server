@@ -1,0 +1,1 @@
+export { rooms, RoomsConfig, getRoomByKey } from "./room-database"

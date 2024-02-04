@@ -1,0 +1,5 @@
+rooms:
+  - name: Goldberg
+    key: pommes
+    type: Meeting-Raum
+    url: https://example.com

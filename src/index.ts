@@ -1,20 +1,12 @@
-import express  from "express";
-import "dotenv/config";
-import { createMessage, generateDisplayImage } from "./message-writer";
+import express, { Request, Response, NextFunction } from "express";
 import "express-async-errors";
-import getEventsForRoom from "./data-provider";
-import getNextWakeupSeconds from "./wakeup-calculator";
-import database from "./database/database";
 import api from "./database/api";
-import path from "path";
-import cors from "cors";
-
-const PORT = process.env.PAPER_PORT || 3000;
-const BASE_PATH = process.env.PAPER_BASE_PATH || "/generate";
+import config from "./config";
+import { getResponseForRoom } from "./service/glue-service";
+import { HttpError } from "./errors";
 
 const app = express();
 const base = express();
-
 
 const toNumber = (value: any): number => {
   if (typeof value === "number") {
@@ -26,47 +18,40 @@ const toNumber = (value: any): number => {
   }
 };
 
-
 base.get("/", async (req, res) => {
-    const { version, voltage, wakeups, key: secret, emulator } = req.query;
-    console.log(`Got request with parameter: ${JSON.stringify(req.query)}`);
+  const { version, voltage, wakeups, key, emulator } = req.query;
+  console.log(`Got request with parameter: ${JSON.stringify(req.query)}`);
 
-    const room = database.getRoomBySecret(secret as string);
-    if (!emulator && room) {
-      database.createVoltage(room.id, toNumber(voltage), toNumber(wakeups));
-    }
+  // const room = database.getRoomBySecret(secret as string);
+  const response = await getResponseForRoom(key as string);
 
-    const events = getEventsForRoom(1);
+  // if (!emulator && room) {
+  //   database.createVoltage(room.id, toNumber(voltage), toNumber(wakeups));
+  // }
 
-    const wakeUpTime = toNumber(getNextWakeupSeconds(events[0].time_end));
-    console.log(`Wake next Wakeup of >>>${secret}<<< in ${wakeUpTime} seconds`)
-
-    const image = await generateDisplayImage(
-      room?.url || "https://github.com/dhartung/paper-image-server",
-      room?.name || "No Room",
-      room?.type || "No Room",
-      events
-    );
-    const response = await createMessage(
-      image,
-      0,
-      wakeUpTime
-    );
-
-    res.setHeader("Content-Type", "application/octet-stream");
-    res.send(response);
+  res.setHeader("Content-Type", "application/octet-stream");
+  res.send(response);
 });
 
-app.use(cors());
-app.use(BASE_PATH, base);
-app.use("/", express.static(path.join(__dirname, "..", "interface", "dist")));
-console.log(path.join(__dirname, "..", "interface", "dist"));
+app.use(config.basePath, base);
+// app.use("/", express.static(path.join(__dirname, "..", "interface", "dist")));
 app.use("/api", api);
 
-if (BASE_PATH != "/") {
-  app.get("/", (_, res) => res.redirect(301, BASE_PATH));
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof HttpError) {
+    res.status(err.statusCode).send(err.message);
+  } else {
+    console.error(err);
+    res.status(500).send("Internal server error:" + err.message);
+  }
+});
+
+if (config.basePath != "/") {
+  app.get("/", (_, res) => res.redirect(301, config.basePath));
 }
 
-app.listen(toNumber(PORT), () =>
-  console.log("Server Running on Port " + PORT + " and path " + BASE_PATH)
+app.listen(toNumber(config.port), () =>
+  console.log(
+    "Server Running on Port " + config.port + " and path " + config.basePath
+  )
 );
